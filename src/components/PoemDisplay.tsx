@@ -1,4 +1,4 @@
-import { Poem } from '../lib/supabase';
+import { Poem } from '../data/poems';
 
 interface PoemDisplayProps {
   poem: Poem;
@@ -8,13 +8,12 @@ export function PoemDisplay({ poem }: PoemDisplayProps) {
   return (
     <div className="max-w-3xl mx-auto px-6 py-12" dir="rtl">
       <article className="prose prose-invert max-w-none">
-        <h1 className="text-5xl md:text-6xl font-bold text-white mb-2 font-serif">
+        <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 font-serif">
           {poem.title}
         </h1>
 
-        <div className="space-y-2 mb-12 text-slate-400 text-sm">
-          <p>{poem.melody}</p>
-          <p>{poem.tune}</p>
+        <div className="space-y-1 mb-12 text-slate-400 text-sm">
+          <p className="text-lg">{poem.poet}</p>
         </div>
 
         <div className="mt-16 space-y-8">

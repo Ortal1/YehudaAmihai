@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
-import { supabase, Poem } from './lib/supabase';
+import { poems, Poem } from './data/poems';
 import { PoemDisplay } from './components/PoemDisplay';
 
 interface PoemWithIndex {
@@ -11,62 +11,48 @@ interface PoemWithIndex {
 
 function App() {
   const [poemData, setPoemData] = useState<PoemWithIndex | null>(null);
-  const [allPoems, setAllPoems] = useState<Poem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const getTodayPoem = async () => {
+  const getTodayPoem = () => {
     try {
       setLoading(true);
-      setError(null);
 
-      const { data: poemsData, error: poemsError } = await supabase
-        .from('poems')
-        .select('*')
-        .order('created_at', { ascending: true });
-
-      if (poemsError) throw poemsError;
-
-      if (!poemsData || poemsData.length === 0) {
-        setError('לא נמצאו שירים במאגר');
+      if (poems.length === 0) {
         return;
       }
-
-      setAllPoems(poemsData);
 
       const today = new Date().toISOString().split('T')[0];
       const dayNumber = Math.floor(
         (new Date(today).getTime() - new Date('2024-01-01').getTime()) / (1000 * 60 * 60 * 24)
       );
 
-      const poemIndex = dayNumber % poemsData.length;
+      const poemIndex = dayNumber % poems.length;
       setPoemData({
-        poem: poemsData[poemIndex],
+        poem: poems[poemIndex],
         index: poemIndex + 1,
-        total: poemsData.length,
+        total: poems.length,
       });
     } catch (err) {
-      setError('שגיאה בטעינת השיר');
-      console.error('Error fetching poem:', err);
+      console.error('Error loading poem:', err);
     } finally {
       setLoading(false);
     }
   };
 
   const navigatePoem = (direction: 'next' | 'prev') => {
-    if (!poemData || allPoems.length === 0) return;
+    if (!poemData || poems.length === 0) return;
 
     let newIndex = poemData.index - 1;
     if (direction === 'next') {
-      newIndex = (newIndex + 1) % allPoems.length;
+      newIndex = (newIndex + 1) % poems.length;
     } else {
-      newIndex = (newIndex - 1 + allPoems.length) % allPoems.length;
+      newIndex = (newIndex - 1 + poems.length) % poems.length;
     }
 
     setPoemData({
-      poem: allPoems[newIndex],
+      poem: poems[newIndex],
       index: newIndex + 1,
-      total: allPoems.length,
+      total: poems.length,
     });
   };
 
@@ -83,16 +69,6 @@ function App() {
             <div className="h-2 w-32 bg-slate-700 rounded mx-auto"></div>
           </div>
           <p className="mt-8 text-slate-400" dir="rtl">טוען שיר היום...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
-        <div className="text-center text-red-400" dir="rtl">
-          <p className="text-xl">{error}</p>
         </div>
       </div>
     );
