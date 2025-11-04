@@ -9,8 +9,15 @@ interface PoemWithIndex {
   total: number;
 }
 
+interface DailyData {
+  date: string;
+  dayNumber: number;
+  hebrewDate: string;
+}
+
 function App() {
   const [poemData, setPoemData] = useState<PoemWithIndex | null>(null);
+  const [dailyData, setDailyData] = useState<DailyData | null>(null);
   const [loading, setLoading] = useState(true);
 
   const getTodayPoem = () => {
@@ -27,10 +34,33 @@ function App() {
       );
 
       const poemIndex = dayNumber % poems.length;
+
+      // Format date in Hebrew and numeric
+      const todayDate = new Date(today);
+      const hebrewDate = todayDate.toLocaleDateString('he-IL', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+
+      // Format as DD/MM/YYYY
+      const numericDate = todayDate.toLocaleDateString('he-IL', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+
       setPoemData({
         poem: poems[poemIndex],
         index: poemIndex + 1,
         total: poems.length,
+      });
+
+      setDailyData({
+        date: numericDate,
+        dayNumber: dayNumber + 1,
+        hebrewDate: hebrewDate
       });
     } catch (err) {
       console.error('Error loading poem:', err);
@@ -102,6 +132,21 @@ function App() {
             <ChevronLeft size={24} />
           </button>
         </div>
+
+        {dailyData && (
+          <div className="mt-6 px-4 md:px-0" dir="rtl">
+            <div className="max-w-3xl mx-auto bg-slate-800/30 backdrop-blur-sm rounded-lg border border-slate-700/50 p-4 md:p-6">
+              <div className="text-center space-y-2">
+                <h2 className="text-slate-300 text-lg md:text-xl font-semibold">
+                  {dailyData.date}
+                </h2>
+                <p className="text-slate-400 text-sm md:text-base">
+                  יום {dailyData.dayNumber} במחזור השירים
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {poemData && (
           <div className="mt-4">
