@@ -135,15 +135,10 @@ function App() {
 
         {dailyData && (
           <div className="mt-6 px-4 md:px-0" dir="rtl">
-            <div className="max-w-3xl mx-auto bg-slate-800/30 backdrop-blur-sm rounded-lg border border-slate-700/50 p-4 md:p-6">
-              <div className="text-center space-y-2">
-                <h2 className="text-slate-300 text-lg md:text-xl font-semibold">
-                  {dailyData.date}
-                </h2>
-                <p className="text-slate-400 text-sm md:text-base">
-                  יום {dailyData.dayNumber} במחזור השירים
-                </p>
-              </div>
+            <div className="max-w-3xl mx-auto text-center">
+              <p className="text-slate-400 text-base md:text-lg">
+                {dailyData.date}
+              </p>
             </div>
           </div>
         )}
