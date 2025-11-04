@@ -23,7 +23,7 @@ function App() {
 
       const today = new Date().toISOString().split('T')[0];
       const dayNumber = Math.floor(
-        (new Date(today).getTime() - new Date('2024-01-01').getTime()) / (1000 * 60 * 60 * 24)
+        (new Date(today).getTime() - new Date('2025-11-04').getTime()) / (1000 * 60 * 60 * 24)
       );
 
       const poemIndex = dayNumber % poems.length;
